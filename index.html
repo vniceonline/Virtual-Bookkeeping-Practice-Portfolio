@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Virtual Bookkeeping Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F6F3EA;
+    --paper-line:#DED6C3;
+    --ink:#26241F;
+    --ink-soft:#5B564A;
+    --ledger-green:#2F4538;
+    --ledger-green-deep:#1D2E24;
+    --brass:#A9824F;
+    --brass-soft:#C9A876;
+    --paid-red:#8C3B2E;
+  }
+
+  *{ box-sizing:border-box; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    font-size:16px;
+    line-height:1.6;
+  }
+
+  /* Ledger ruled background texture */
+  .ruled{
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 37px,
+      var(--paper-line) 38px
+    );
+  }
+
+  h1, h2, h3{
+    font-family:'Lora', serif;
+    color:var(--ledger-green-deep);
+    margin:0;
+  }
+
+  a{ color:inherit; }
+
+  .wrap{
+    max-width:900px;
+    margin:0 auto;
+    padding:0 28px;
+  }
+
+  /* ---------- HEADER / NAV ---------- */
+  header{
+    position:sticky;
+    top:0;
+    z-index:20;
+    background:rgba(246,243,234,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--paper-line);
+  }
+  .nav-inner{
+    max-width:900px;
+    margin:0 auto;
+    padding:16px 28px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .brand{
+    font-family:'Lora', serif;
+    font-weight:700;
+    font-size:18px;
+    letter-spacing:0.02em;
+    color:var(--ledger-green-deep);
+  }
+  .brand .tick{ color:var(--brass); }
+  nav ul{
+    list-style:none;
+    display:flex;
+    gap:28px;
+    margin:0;
+    padding:0;
+  }
+  nav a{
+    text-decoration:none;
+    font-size:13px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    font-weight:500;
+    border-bottom:1px solid transparent;
+    padding-bottom:2px;
+    transition:border-color .2s ease, color .2s ease;
+  }
+  nav a:hover{ color:var(--ledger-green-deep); border-color:var(--brass); }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:88px 0 64px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero .wrap{ position:relative; z-index:2; }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--brass);
+    margin-bottom:18px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:26px;
+    height:1px;
+    background:var(--brass);
+    display:inline-block;
+  }
+  .hero h1{
+    font-size:clamp(34px, 5vw, 52px);
+    line-height:1.12;
+    max-width:14ch;
+    font-weight:600;
+  }
+  .hero .lede{
+    margin-top:22px;
+    max-width:52ch;
+    font-size:17px;
+    color:var(--ink-soft);
+  }
+  .hero .ledger-figure{
+    margin-top:44px;
+    display:flex;
+    gap:0;
+    border:1px solid var(--paper-line);
+    background:#FBF9F3;
+  }
+  .ledger-figure .cell{
+    flex:1;
+    padding:18px 20px;
+    border-right:1px solid var(--paper-line);
+  }
+  .ledger-figure .cell:last-child{ border-right:none; }
+  .ledger-figure .num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:24px;
+    color:var(--ledger-green-deep);
+    font-weight:500;
+  }
+  .ledger-figure .label{
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-top:4px;
+    letter-spacing:0.02em;
+  }
+
+  /* ---------- SECTION SHELL ---------- */
+  section{
+    padding:64px 0;
+    border-top:1px solid var(--paper-line);
+  }
+  .section-head{
+    display:flex;
+    align-items:baseline;
+    gap:16px;
+    margin-bottom:36px;
+  }
+  .section-tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--brass);
+    letter-spacing:0.08em;
+    white-space:nowrap;
+  }
+  .section-head h2{
+    font-size:26px;
+    font-weight:600;
+  }
+  .section-rule{
+    flex:1;
+    height:1px;
+    background:var(--paper-line);
+  }
+
+  /* ---------- ABOUT ---------- */
+  .about-grid{
+    display:grid;
+    grid-template-columns:1.5fr 1fr;
+    gap:40px;
+  }
+  .about-grid p{
+    color:var(--ink-soft);
+    margin:0 0 16px;
+  }
+  .about-grid p:last-child{ margin-bottom:0; }
+  .credential-card{
+    background:#FBF9F3;
+    border:1px solid var(--paper-line);
+    padding:22px;
+  }
+  .credential-card h3{
+    font-size:15px;
+    margin-bottom:14px;
+    color:var(--ledger-green-deep);
+  }
+  .credential-card ul{
+    list-style:none;
+    margin:0; padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .credential-card li{
+    display:flex;
+    justify-content:space-between;
+    font-size:13.5px;
+    border-bottom:1px dashed var(--paper-line);
+    padding-bottom:10px;
+    color:var(--ink-soft);
+  }
+  .credential-card li span:last-child{
+    font-family:'IBM Plex Mono', monospace;
+    color:var(--ledger-green-deep);
+    font-size:12.5px;
+  }
+
+  /* ---------- SKILLS ---------- */
+  .skills-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:1px;
+    background:var(--paper-line);
+    border:1px solid var(--paper-line);
+  }
+  .skill-col{
+    background:var(--paper);
+    padding:24px;
+  }
+  .skill-col h3{
+    font-size:14px;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:var(--brass);
+    margin-bottom:16px;
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:500;
+  }
+  .skill-col ul{
+    list-style:none;
+    margin:0; padding:0;
+  }
+  .skill-col li{
+    font-size:14px;
+    color:var(--ink-soft);
+    padding:9px 0;
+    border-bottom:1px solid var(--paper-line);
+    display:flex;
+    gap:10px;
+  }
+  .skill-col li:last-child{ border-bottom:none; }
+  .skill-col li::before{
+    content:"✓";
+    color:var(--ledger-green);
+    font-weight:700;
+    flex-shrink:0;
+  }
+
+  /* ---------- SERVICES ---------- */
+  .services-list{
+    display:flex;
+    flex-direction:column;
+  }
+  .service-row{
+    display:grid;
+    grid-template-columns:60px 1fr;
+    gap:20px;
+    padding:22px 0;
+    border-bottom:1px solid var(--paper-line);
+    align-items:start;
+  }
+  .service-row:first-child{ border-top:1px solid var(--paper-line); }
+  .service-code{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--brass);
+    padding-top:4px;
+  }
+  .service-row h3{
+    font-size:17px;
+    margin-bottom:6px;
+  }
+  .service-row p{
+    margin:0;
+    color:var(--ink-soft);
+    font-size:14.5px;
+    max-width:60ch;
+  }
+
+  /* ---------- CASE STUDY ---------- */
+  .case-card{
+    background:#FBF9F3;
+    border:1px solid var(--paper-line);
+    overflow:hidden;
+  }
+  .case-header{
+    padding:26px 28px;
+    border-bottom:1px solid var(--paper-line);
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:20px;
+    flex-wrap:wrap;
+  }
+  .case-header h3{ font-size:19px; margin-bottom:6px; }
+  .case-meta{
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+  .practice-badge{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--ledger-green-deep);
+    background:#E7E1CF;
+    border:1px solid var(--brass-soft);
+    padding:5px 10px;
+    white-space:nowrap;
+  }
+  .case-body{ padding:28px; }
+  .case-body h4{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--brass);
+    margin:0 0 14px;
+  }
+  .case-body h4:not(:first-child){ margin-top:30px; }
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13px;
+  }
+  th{
+    text-align:left;
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:500;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    color:var(--ink-soft);
+    padding:8px 10px;
+    border-bottom:1px solid var(--brass-soft);
+  }
+  td{
+    padding:9px 10px;
+    border-bottom:1px solid var(--paper-line);
+    color:var(--ink);
+  }
+  td.num{ font-family:'IBM Plex Mono', monospace; text-align:right; }
+  .status-paid{ color:var(--ledger-green); font-weight:500; }
+  .status-open{ color:var(--paid-red); font-weight:500; }
+
+  .summary-strip{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:1px;
+    background:var(--paper-line);
+    border:1px solid var(--paper-line);
+    margin-top:24px;
+  }
+  .summary-strip .cell{
+    background:var(--paper);
+    padding:16px;
+    text-align:center;
+  }
+  .summary-strip .num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:18px;
+    color:var(--ledger-green-deep);
+  }
+  .summary-strip .label{
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-top:4px;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+  }
+
+  .disclosure{
+    margin-top:20px;
+    font-size:12.5px;
+    font-style:italic;
+    color:var(--ink-soft);
+    border-left:2px solid var(--brass-soft);
+    padding-left:12px;
+  }
+
+  /* ---------- FOOTER / CONTACT ---------- */
+  footer{
+    background:var(--ledger-green-deep);
+    color:#EDE9DB;
+    padding:56px 0;
+  }
+  footer h2{ color:#F6F3EA; font-size:24px; }
+  footer p{ color:#C8C2AE; max-width:48ch; }
+  .foot-meta{
+    margin-top:28px;
+    display:flex;
+    gap:32px;
+    flex-wrap:wrap;
+    font-size:13px;
+    color:#C8C2AE;
+  }
+  .foot-meta strong{ color:#F6F3EA; display:block; font-weight:500; margin-bottom:3px; }
+
+  @media (max-width: 720px){
+    .about-grid{ grid-template-columns:1fr; }
+    .skills-grid{ grid-template-columns:1fr; }
+    .summary-strip{ grid-template-columns:repeat(2, 1fr); }
+    nav ul{ gap:16px; }
+    .hero .ledger-figure{ flex-direction:column; }
+    .ledger-figure .cell{ border-right:none; border-bottom:1px solid var(--paper-line); }
+    .ledger-figure .cell:last-child{ border-bottom:none; }
+  }
+
+  :focus-visible{
+    outline:2px solid var(--brass);
+    outline-offset:2px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-inner">
+    <div class="brand">Ledger &amp; Line <span class="tick">✓</span></div>
+    <nav>
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#case-study">Sample Work</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Virtual Bookkeeping — In Training</div>
+    <h1>Corporate accounting discipline, applied to small business books.</h1>
+    <p class="lede">20+ years of corporate accounting experience, now channeled into virtual bookkeeping — currently training in QuickBooks Online through TBSA's mentorship program.</p>
+
+    <div class="ledger-figure">
+      <div class="cell">
+        <div class="num">20+</div>
+        <div class="label">Years corporate accounting</div>
+      </div>
+      <div class="cell">
+        <div class="num">QBO</div>
+        <div class="label">Primary bookkeeping tool</div>
+      </div>
+      <div class="cell">
+        <div class="num">TBSA</div>
+        <div class="label">Current training program</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="about" class="wrap">
+  <div class="section-head">
+    <span class="section-tag">01 — About</span>
+    <div class="section-rule"></div>
+  </div>
+  <div class="about-grid">
+    <div>
+      <p>I bring over 20 years of corporate accounting experience to my transition into virtual bookkeeping. After two decades managing financial processes in a corporate setting, I made the decision to apply that experience to serving small businesses directly through remote bookkeeping services.</p>
+      <p>I am currently training with TBSA, a mentorship community of trainors with 5+ years of experience in virtual bookkeeping, where I am developing practical, client-ready skills in QuickBooks Online (QBO) through daily exercises and structured coursework. I also use AI tools such as ChatGPT and Claude to support my research and reinforce accuracy in my day-to-day practice.</p>
+      <p>My aim is to bring the rigor and discipline of corporate accounting to small business owners, offering reliable, detail-oriented bookkeeping support at a scale that fits their needs.</p>
+    </div>
+    <div class="credential-card">
+      <h3>At a Glance</h3>
+      <ul>
+        <li><span>Background</span><span>Corporate Accounting</span></li>
+        <li><span>Experience</span><span>20+ Years</span></li>
+        <li><span>Training</span><span>TBSA Program</span></li>
+        <li><span>Main Tool</span><span>QuickBooks Online</span></li>
+        <li><span>Stage</span><span>Practice &amp; Training</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="skills" class="wrap">
+  <div class="section-head">
+    <span class="section-tag">02 — Skills</span>
+    <div class="section-rule"></div>
+  </div>
+  <div class="skills-grid">
+    <div class="skill-col">
+      <h3>Bookkeeping Skills</h3>
+      <ul>
+        <li>Transaction recording &amp; categorization (income &amp; expenses)</li>
+        <li>Accounts Receivable &amp; Payable tracking</li>
+        <li>Accrual &amp; cash-basis accounting foundations</li>
+      </ul>
+    </div>
+    <div class="skill-col">
+      <h3>Software &amp; Tools</h3>
+      <ul>
+        <li>QuickBooks Online (QBO)</li>
+        <li>Microsoft Excel</li>
+        <li>AI-assisted workflows (ChatGPT, Claude)</li>
+      </ul>
+    </div>
+    <div class="skill-col">
+      <h3>Core Strengths</h3>
+      <ul>
+        <li>Attention to detail from corporate accounting</li>
+        <li>Adapting corporate discipline to small business needs</li>
+        <li>Ongoing training through TBSA</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="services" class="wrap">
+  <div class="section-head">
+    <span class="section-tag">03 — Services</span>
+    <div class="section-rule"></div>
+  </div>
+  <div class="services-list">
+    <div class="service-row">
+      <div class="service-code">01</div>
+      <div>
+        <h3>Transaction Recording (Income &amp; Expenses)</h3>
+        <p>Accurate categorization and recording of income and expenses.</p>
+      </div>
+    </div>
+    <div class="service-row">
+      <div class="service-code">02</div>
+      <div>
+        <h3>Accounts Receivable &amp; Payable</h3>
+        <p>Tracking invoices, bills, and payment schedules, tied directly to income and expense recognition.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="case-study" class="wrap">
+  <div class="section-head">
+    <span class="section-tag">04 — Sample Work</span>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="case-card">
+    <div class="case-header">
+      <div>
+        <h3>Bella's Corner Café</h3>
+        <div class="case-meta">Transaction Recording &amp; AR/AP Tracking · June 2026 · QuickBooks Online</div>
+      </div>
+      <div class="practice-badge">Practice Exercise · Fictional Client</div>
+    </div>
+
+    <div class="case-body">
+      <h4>Transaction Recording</h4>
+      <table>
+        <tr><th>Date</th><th>Description</th><th>Category</th><th style="text-align:right">Amount</th></tr>
+        <tr><td>06/02</td><td>Daily sales — cash &amp; card</td><td>Sales Income</td><td class="num">$1,240.00</td></tr>
+        <tr><td>06/03</td><td>Coffee bean supplier — Roasters Co.</td><td>COGS: Beverages</td><td class="num">($480.00)</td></tr>
+        <tr><td>06/07</td><td>Electric bill</td><td>Utilities Expense</td><td class="num">($215.00)</td></tr>
+        <tr><td>06/15</td><td>Rent payment</td><td>Rent Expense</td><td class="num">($1,800.00)</td></tr>
+        <tr><td>06/28</td><td>Payroll — part-time staff</td><td>Payroll Expense</td><td class="num">($2,100.00)</td></tr>
+      </table>
+
+      <h4>Accounts Receivable</h4>
+      <table>
+        <tr><th>Invoice #</th><th>Customer</th><th>Due Date</th><th style="text-align:right">Amount</th><th>Status</th></tr>
+        <tr><td>INV-1042</td><td>Local Office Catering</td><td>06/20</td><td class="num">$320.00</td><td class="status-paid">Paid</td></tr>
+        <tr><td>INV-1043</td><td>Riverside Events</td><td>06/29</td><td class="num">$475.00</td><td class="status-open">Outstanding</td></tr>
+        <tr><td>INV-1044</td><td>Local Office Catering</td><td>07/07</td><td class="num">$290.00</td><td class="status-open">Outstanding</td></tr>
+      </table>
+
+      <h4>Accounts Payable</h4>
+      <table>
+        <tr><th>Bill #</th><th>Vendor</th><th>Due Date</th><th style="text-align:right">Amount</th><th>Status</th></tr>
+        <tr><td>BILL-201</td><td>Roasters Co.</td><td>06/17</td><td class="num">$480.00</td><td class="status-paid">Paid</td></tr>
+        <tr><td>BILL-202</td><td>Sweet Batch Bakery</td><td>06/24</td><td class="num">$340.00</td><td class="status-paid">Paid</td></tr>
+        <tr><td>BILL-203</td><td>Roasters Co.</td><td>07/08</td><td class="num">$510.00</td><td class="status-open">Outstanding</td></tr>
+      </table>
+
+      <div class="summary-strip">
+        <div class="cell">
+          <div class="num">$6,136.50</div>
+          <div class="label">Total Income</div>
+        </div>
+        <div class="cell">
+          <div class="num">($5,020.40)</div>
+          <div class="label">Total Expenses</div>
+        </div>
+        <div class="cell">
+          <div class="num">$765.00</div>
+          <div class="label">Outstanding AR</div>
+        </div>
+        <div class="cell">
+          <div class="num">$510.00</div>
+          <div class="label">Outstanding AP</div>
+        </div>
+      </div>
+
+      <p class="disclosure">This is a practice exercise using a fictional business, created to demonstrate bookkeeping process and QuickBooks Online proficiency.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <h2>Currently building experience through practice.</h2>
+    <p>Open to pilot projects and practice work as I continue training in virtual bookkeeping.</p>
+    <div class="foot-meta">
+      <div><strong>Training</strong>TBSA Virtual Bookkeeping Program</div>
+      <div><strong>Tools</strong>QuickBooks Online, Excel</div>
+      <div><strong>Stage</strong>Beginner — Practice &amp; Case Studies</div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
