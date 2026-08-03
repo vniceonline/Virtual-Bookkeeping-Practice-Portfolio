@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>End-to-End A/R Cycle &amp; Revenue Reconciliation — Practice Case Study</title>
+<style>
+  :root {
+    --ink: #1f2a24;
+    --paper: #faf8f4;
+    --line: #d8d2c4;
+    --accent: #2f5d4f;
+    --accent-soft: #e7efe9;
+    --flag: #9c5b2e;
+    --flag-soft: #f6ede2;
+    --muted: #6b6355;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Georgia', 'Iowan Old Style', serif;
+    line-height: 1.65;
+  }
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 64px 24px 100px;
+  }
+  a { color: var(--accent); }
+  .back {
+    display: inline-block;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    margin-bottom: 36px;
+  }
+  .back:hover { color: var(--accent); }
+  .eyebrow {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 14px;
+  }
+  h1 {
+    font-size: 34px;
+    line-height: 1.2;
+    margin: 0 0 10px;
+    font-weight: 600;
+  }
+  .subtitle {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 14px;
+    color: var(--muted);
+    margin: 0 0 40px;
+  }
+  .skills {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 13px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 48px;
+  }
+  .skills span {
+    background: var(--accent-soft);
+    color: var(--accent);
+    padding: 6px 12px;
+    border-radius: 100px;
+    border: 1px solid #cfe0d6;
+  }
+  h2 {
+    font-size: 22px;
+    margin: 56px 0 8px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .part-num {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    display: block;
+    margin-top: 24px;
+  }
+  h3 {
+    font-size: 17px;
+    margin: 30px 0 8px;
+    color: var(--accent);
+  }
+  p { margin: 0 0 16px; }
+  strong { font-weight: 700; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0 24px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 14px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  th {
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 2px solid var(--ink);
+  }
+  td.num, th.num { text-align: right; }
+  .callout {
+    background: var(--flag-soft);
+    border-left: 3px solid var(--flag);
+    padding: 18px 22px;
+    margin: 20px 0 28px;
+    border-radius: 0 6px 6px 0;
+  }
+  .callout p:last-child { margin-bottom: 0; }
+  .callout .label {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--flag);
+    display: block;
+    margin-bottom: 8px;
+  }
+  ol, ul { margin: 0 0 16px; padding-left: 22px; }
+  li { margin-bottom: 8px; }
+  hr {
+    border: none;
+    border-top: 1px solid var(--line);
+    margin: 48px 0 0;
+  }
+  .result-line {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background: var(--accent-soft);
+    border-radius: 6px;
+    padding: 14px 18px;
+    font-size: 14px;
+    margin: 20px 0;
+  }
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 20px 0 24px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+  }
+  .metric {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .metric .val {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .metric.neg .val { color: #a13a2e; }
+  .metric .lbl {
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .takeaways {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 28px 30px;
+    margin-top: 24px;
+  }
+  .takeaways h2 {
+    border: none;
+    margin: 0 0 16px;
+    padding: 0;
+  }
+  .takeaways ul { padding-left: 20px; margin-bottom: 0; }
+  footer {
+    margin-top: 60px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+  }
+  @media (max-width: 600px) {
+    .wrap { padding: 40px 18px 80px; }
+    h1 { font-size: 27px; }
+    .metrics { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="index.html">&larr; Back to Portfolio</a>
+
+  <p class="eyebrow">Practice Case Study</p>
+  <h1>End-to-End A/R Cycle &amp; Revenue Reconciliation</h1>
+  <p class="subtitle">Sample Company: Craig's Design and Landscaping Services &nbsp;·&nbsp; QuickBooks Online Test Drive</p>
+
+  <div class="skills">
+    <span>Overdue Invoice Management</span>
+    <span>Payment Processing</span>
+    <span>Undeposited Funds &amp; Deposits</span>
+    <span>Bank Feed Matching</span>
+    <span>Accrual vs. Cash Analysis</span>
+    <span>Unbilled Revenue Audit</span>
+  </div>
+
+  <p>This exercise executed a complete Accounts Receivable cycle in QuickBooks Online — from identifying overdue invoices through payment collection, deposit batching, bank feed matching, and final financial statement analysis. The goal was to bring all open A/R balances to zero while verifying that every dollar collected flowed through cleanly to the company's books, with no duplicated income or unexplained variances.</p>
+
+  <hr>
+
+  <h2><span class="part-num">Part 1</span>Overdue Invoice Management &amp; Payment Collection</h2>
+
+  <h3>Invoice Audit</h3>
+  <p>Filtered the open invoice register to isolate past-due receivables, then issued a mix of batch and targeted invoice reminders to prompt client payment. This step surfaced all outstanding balances across the fiscal year rather than relying on ad-hoc follow-up.</p>
+
+  <h3>Recording Payments</h3>
+  <p>Recorded customer payments against specific open invoices — including multi-invoice customer accounts (e.g., Bill's Windsurf Shop, Freeman Sporting Goods) — allocating a single payment receipt correctly across multiple line items where needed. Across the full cycle, payments were received and applied against <strong>9 open invoice records</strong>, clearing every past-due balance on the books.</p>
+
+  <h3>Routing to Undeposited Funds</h3>
+  <p>Rather than posting each payment directly to Checking, collected receipts were routed to <strong>Undeposited Funds</strong> — the correct intermediate step that mirrors how funds actually sit before a physical bank deposit is made. This keeps the audit trail clean and prevents income from posting to the bank register before it's actually deposited.</p>
+
+  <div class="result-line"><strong>Result:</strong> Open invoice count moved from 9 items ($3,100.00) to 0 items ($0.00) — full A/R settlement, 100% collected.</div>
+
+  <hr>
+
+  <h2><span class="part-num">Part 2</span>Deposit Batching &amp; Bank Feed Matching</h2>
+
+  <h3>Grouped Bank Deposits</h3>
+  <p>Batched individual receipts sitting in Undeposited Funds into consolidated Bank Deposit transactions, matching each deposit total to what would physically hit the bank in a single transaction — first a <strong>$4,061.12</strong> deposit across 12 payments, then a subsequent <strong>$8,973.74</strong> batch clearing the remaining queue. Both were transferred out of Undeposited Funds and posted directly into the Checking account register.</p>
+
+  <h3>Bank Feed Reconciliation</h3>
+  <p>When the actual funds appeared in the bank feed, each deposit line was matched against its corresponding pre-recorded Bank Deposit — the correct sequence to avoid QuickBooks recording the same income twice (once from the invoice/payment, once again from the raw bank feed line). Remaining direct income and vendor purchase lines were categorized into their proper Chart of Accounts entries (Job Materials, Equipment Maintenance, Sales of Product Income), and every bank line was confirmed to have an assigned payee or customer for sub-ledger transparency.</p>
+
+  <div class="result-line"><strong>Result:</strong> Zero uncollected invoice balance across the company dashboard, with all deposits reconciled against the bank feed and no duplicate income entries.</div>
+
+  <hr>
+
+  <h2><span class="part-num">Part 3</span>Unbilled Revenue Audit</h2>
+  <p>A <strong>$750.00 Unbilled Income</strong> entry appeared on the business funnel dashboard, flagged for investigation rather than left unexplained. Tracing the underlying billable expense/time-tracking lifecycle — <em>Billable Activity &rarr; Invoice &rarr; Payment &rarr; Deposit</em> — confirmed the $750 had already been converted into Invoice #1007 (John Melton), fully collected, and properly reflected in total income.</p>
+
+  <div class="callout">
+    <span class="label">Why This Matters</span>
+    <p>An "Unbilled Income" balance sitting on a dashboard can look like missing or leaking revenue if left unchecked. Rather than assuming it was an error — or ignoring it — the correct professional response was to trace it back through its full lifecycle and confirm it had already been properly billed and collected. That's the difference between reading a number and verifying it.</p>
+  </div>
+
+  <hr>
+
+  <h2><span class="part-num">Part 4</span>Financial Statement Analysis: Accrual vs. Cash</h2>
+  <p>Generated the Profit and Loss report (YTD 2026) under both accounting methods to evaluate the gap between earned revenue and actual cash collected:</p>
+
+  <table>
+    <thead>
+      <tr><th>Metric</th><th class="num">Accrual Basis</th><th class="num">Cash Basis</th><th class="num">Variance</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Total Income</td><td class="num">$10,200.77</td><td class="num">$7,002.27</td><td class="num">-$3,198.50</td></tr>
+      <tr><td>Gross Profit</td><td class="num">$9,795.77</td><td class="num">$6,773.52</td><td class="num">-$3,022.25</td></tr>
+    </tbody>
+  </table>
+
+  <div class="metrics">
+    <div class="metric">
+      <div class="val">9 → 0</div>
+      <div class="lbl">Open Invoices Cleared</div>
+    </div>
+    <div class="metric">
+      <div class="val">$13,034.86</div>
+      <div class="lbl">Total Deposited (Both Batches)</div>
+    </div>
+    <div class="metric">
+      <div class="val">$0.00</div>
+      <div class="lbl">Unbilled Income Variance</div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <span class="label">Strategic Insight</span>
+    <p>A $3,022.25 gap between Accrual and Cash Gross Profit shows the business maintains strong sales velocity on payment terms — invoices are being written and earned — but a meaningful share of that revenue was still sitting in Accounts Receivable rather than in the bank. On paper the business looks highly profitable; in practice, cash flow needs active monitoring so operating expenses can still be covered while collections catch up.</p>
+  </div>
+
+  <div class="takeaways">
+    <h2 style="margin-top:0;">Key Takeaways</h2>
+    <ul>
+      <li>Executed a full Accounts Receivable cycle end-to-end — invoice audit, payment collection, deposit batching, and bank feed matching — clearing 9 open invoices worth $3,100.00 down to $0.00</li>
+      <li>Prevented duplicate revenue entries by routing every payment through Undeposited Funds before matching to the bank feed</li>
+      <li>Investigated a $750 Unbilled Income flag rather than dismissing or assuming it, tracing it to a fully collected invoice</li>
+      <li>Compared Accrual vs. Cash basis reporting to surface a real cash-flow insight beyond what the raw P&amp;L shows on its face</li>
+      <li>Reinforced that financial reporting isn't just running a report — it's interpreting what the numbers mean for the business</li>
+    </ul>
+  </div>
+
+  <footer>
+    <a href="index.html">&larr; Back to Portfolio</a>
+  </footer>
+
+</div>
+</body>
+</html>
